@@ -1,6 +1,7 @@
 import json
 from kafka import KafkaConsumer, KafkaProducer
 from models import train_model
+import os
 
 def consume_and_train(bootstrap="localhost:9092"):
     # Probe topics
@@ -19,7 +20,8 @@ def consume_and_train(bootstrap="localhost:9092"):
         *in_topics,
         bootstrap_servers=bootstrap,
         value_deserializer=lambda m: json.loads(m.decode("utf-8")),
-        group_id="worker-group",          # same group → load-balanced across workers
+        group_id= "worker-group",          # same group → load-balanced across workers
+        #f"worker-group-{os.getpid()}",   # unique group per run
         auto_offset_reset="earliest"
     )
     producer = KafkaProducer(
