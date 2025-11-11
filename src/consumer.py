@@ -27,9 +27,10 @@ def consume_and_train(bootstrap="localhost:9092"):
         exp_name = in_topic.replace("hyperparams_", "")
         params = msg.value
         model = params.get("model", exp_name)
+        dataset = params.get("dataset", "iris")
 
         try:
-            score = train_model(model, params)
+            score = train_model(model, params, dataset)
             out_topic = f"results_{exp_name}"
             payload = {"params": params, "score": score, "model": model}
             print(f"[{exp_name}] {params} → {score:.3f}")

@@ -1,16 +1,26 @@
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
-from sklearn.datasets import load_iris
+from sklearn.datasets import load_iris, load_wine, load_digits, load_breast_cancer
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
 
-def get_dataset():
-    data = load_iris()
+DATASET_LOADERS = {
+    "iris": load_iris,
+    "wine": load_wine,
+    "digits": load_digits,
+    "breast_cancer": load_breast_cancer,
+}
+
+def get_dataset(name: str = "iris"):
+    try:
+        data = DATASET_LOADERS[name]()
+    except KeyError as exc:
+        raise ValueError(f"Unknown dataset '{name}'. Available: {sorted(DATASET_LOADERS)}") from exc
     return data.data, data.target
 
-def train_model(model_name: str, params: dict):
-    X, y = get_dataset()
+def train_model(model_name: str, params: dict, dataset: str = "iris"):
+    X, y = get_dataset(dataset)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
     if model_name == "logreg":
