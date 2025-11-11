@@ -36,9 +36,12 @@ Quick Start
 
 3. **Kick off an experiment producer** – run in another terminal, pick one model:
    ```bash
-   python src/main.py [knn|dtree|logreg] [optional_num_trials]
+   python src/main.py [knn|dtree|logreg] \
+       -t [optional_num_trials] \
+       --dataset [iris|wine|digits|breast_cancer] \
+       --partitions 3
    ```
-   This publishes randomly sampled configs into `hyperparams_<exp>` topics.
+   `--partitions` ensures the Kafka topics have enough partitions for multiple workers so they can split the load. This publishes randomly sampled configs into `hyperparams_<exp>` topics.
 
 4. **Evaluate + plot** – after some trials arrive, run:
    ```bash
@@ -49,8 +52,8 @@ Quick Start
 How It Works
 ------------
 
-1. `main.py` loads an experiment module (`experiments/knn.py`, etc.), samples configs via `random_search`, and pushes them to Kafka (`hyperparams_*` topics).
-2. `consumer.py` subscribes to every `hyperparams_*` topic, trains the requested model (KNN, Decision Tree, Logistic Regression) on Iris data, and emits results into `results_*`.
+1. `main.py` loads an experiment module (`experiments/knn.py`, etc.), samples configs via `random_search` (deduplicated for discrete spaces), attaches the requested dataset name, ensures the Kafka topics exist with the requested partition count, and pushes the jobs to Kafka (`hyperparams_*` topics).
+2. `consumer.py` subscribes to every `hyperparams_*` topic, trains the requested model (KNN, Decision Tree, Logistic Regression) on the specified dataset, and emits results into `results_*`.
 3. `evaluate.py` consumes results topics from the beginning, reports the best accuracy per experiment, and generates a loss plot for quick visual comparison.
 
 Customization Ideas

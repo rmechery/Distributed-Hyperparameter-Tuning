@@ -11,4 +11,4 @@ def search_space() -> Dict:
     }
 
 def configs(n_trials: int):
-    yield from random_search(search_space(), n_trials)
+    yield from random_search(search_space(), n_trials, unique=True)
