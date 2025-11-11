@@ -3,25 +3,20 @@ from kafka import KafkaConsumer, KafkaProducer
 from models import train_model
 
 def consume_and_train(bootstrap="localhost:9092"):
-    # Probe topics
-    probe = KafkaConsumer(bootstrap_servers=bootstrap)
-    topics = probe.topics()
-    probe.close()
-
-    in_topics = sorted(t for t in topics if t.startswith("hyperparams_"))
-    if not in_topics:
-        print("⚠️ No 'hyperparams_*' topics found. Run src/main.py first.")
-        return
-
-    print(f"👂 Worker subscribing to: {in_topics}")
-
     consumer = KafkaConsumer(
-        *in_topics,
         bootstrap_servers=bootstrap,
         value_deserializer=lambda m: json.loads(m.decode("utf-8")),
         group_id="worker-group",          # same group → load-balanced across workers
         auto_offset_reset="earliest"
     )
+    consumer.subscribe(pattern="^hyperparams_")
+
+    existing = sorted(t for t in consumer.topics() if t.startswith("hyperparams_"))
+    if existing:
+        print(f"👂 Worker subscribed to: {existing}")
+    else:
+        print("👂 Worker waiting for topics matching 'hyperparams_*' (will attach when they appear)")
+
     producer = KafkaProducer(
         bootstrap_servers=bootstrap,
         value_serializer=lambda v: json.dumps(v).encode("utf-8")
