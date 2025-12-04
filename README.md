@@ -59,3 +59,7 @@ Customization Ideas
 - Extend `src/experiments/` with new search spaces or models.
 - Point `main.py`, `consumer.py`, and `evaluate.py` at remote Kafka brokers via the `bootstrap` parameter if running on multiple machines.
 - Swap out the dataset in `models.py` or plug in more advanced evaluators.
+
+AI Disclosure
+-------------------
+We used Github Copilot from VSCode to assist with coding and ChatGPT for documentation/comments in this assignment.
