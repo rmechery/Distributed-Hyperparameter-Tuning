@@ -1,7 +1,5 @@
-import unittest
-import sys
-import os
-
+import unittest, sys, os, pytest
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from src.models import train_model as tmodel
 
 class TestTrainModel(unittest.TestCase):
@@ -23,5 +21,11 @@ class TestTrainModel(unittest.TestCase):
         self.assertGreaterEqual(result, 0.0)
         self.assertLessEqual(result, 1.0)
 
+    def test_unknown_model(self):
+        with self.assertRaises(ValueError) as context:
+            tmodel("svm", {})
+        self.assertIn("Unknown model", str(context.exception))    
+
+    
 if __name__ == "__main__":
     unittest.main()

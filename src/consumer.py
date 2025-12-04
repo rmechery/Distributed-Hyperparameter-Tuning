@@ -1,6 +1,6 @@
 import json
 from kafka import KafkaConsumer, KafkaProducer
-from models import train_model
+from src.models import train_model
 
 def consume_and_train(bootstrap="localhost:9092"):
     # Probe topics
