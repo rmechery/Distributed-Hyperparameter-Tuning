@@ -62,4 +62,4 @@ Customization Ideas
 
 AI Disclosure
 -------------------
-We used Github Copilot from VSCode to assist with coding and ChatGPT for documentation/comments in this assignment.
+We used Github Copilot from VSCode to assist with coding, and ChatGPT for documentation and testing in this assignment.
