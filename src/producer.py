@@ -1,7 +1,6 @@
 from kafka import KafkaProducer
 import json
-from search import random_search
-
+from src.search import random_search
 
 def produce_configs(bootstrap_server="localhost:9092", n_trials=10):
     producer = KafkaProducer(
