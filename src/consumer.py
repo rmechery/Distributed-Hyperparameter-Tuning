@@ -1,8 +1,13 @@
 import json
+import os
+import socket
+import time
 from kafka import KafkaConsumer, KafkaProducer
 from models import train_model
 
 def consume_and_train(bootstrap="localhost:9092"):
+    host = socket.gethostname().split(".")[0]
+    worker_id = f"{host}-{os.getpid()}"
     consumer = KafkaConsumer(
         bootstrap_servers=bootstrap,
         value_deserializer=lambda m: json.loads(m.decode("utf-8")),
@@ -30,10 +35,18 @@ def consume_and_train(bootstrap="localhost:9092"):
         dataset = params.get("dataset", "iris")
 
         try:
+            start = time.perf_counter()
             score = train_model(model, params, dataset)
+            duration = time.perf_counter() - start
             out_topic = f"results_{exp_name}"
-            payload = {"params": params, "score": score, "model": model}
-            print(f"[{exp_name}] {params} → {score:.3f}")
+            payload = {
+                "params": params,
+                "score": score,
+                "model": model,
+                "worker_id": worker_id,
+                "duration_sec": duration,
+            }
+            print(f"[{exp_name}] {params} → {score:.3f} ({duration:.2f}s, worker={worker_id})")
             producer.send(out_topic, value=payload)
             producer.flush()
         except Exception as e:

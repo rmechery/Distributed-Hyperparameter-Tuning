@@ -59,12 +59,11 @@ def run_experiment(exp_name: str, n_trials: int, dataset: str, bootstrap: str, p
 def parse_args():
     parser = argparse.ArgumentParser(description="Publish hyperparameter configs to Kafka.")
     parser.add_argument("experiment", choices=EXPERIMENTS, help="Experiment module to run.")
-    parser.add_argument("-t", "--trials", type=int, default=12, help="Number of configs to send.")
+    parser.add_argument("-t", "--trials", type=int, default=50, help="Number of configs to send.")
     parser.add_argument("--dataset", choices=DATASETS, default="iris", help="Dataset to train on.")
     parser.add_argument("--bootstrap", default="localhost:9092", help="Kafka bootstrap servers.")
-    parser.add_argument("--partitions", type=int, default=1, help="Ensure topics have at least this many partitions.")
     return parser.parse_args()
 
 if __name__ == "__main__":
     args = parse_args()
-    run_experiment(args.experiment, args.trials, args.dataset, args.bootstrap, max(1, args.partitions))
+    run_experiment(args.experiment, args.trials, args.dataset, args.bootstrap, partitions=3)

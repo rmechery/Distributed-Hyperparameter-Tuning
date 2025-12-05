@@ -38,10 +38,9 @@ Quick Start
    ```bash
    python src/main.py [knn|dtree|logreg] \
        -t [optional_num_trials] \
-       --dataset [iris|wine|digits|breast_cancer] \
-       --partitions 3
+       --dataset [iris|wine|digits|breast_cancer]
    ```
-   `--partitions` ensures the Kafka topics have enough partitions for multiple workers so they can split the load. This publishes randomly sampled configs into `hyperparams_<exp>` topics.
+   This publishes randomly sampled configs into `hyperparams_<exp>` topics. Topics are auto-created with a few partitions to let multiple workers share the load.
 
 4. **Evaluate + plot** – after some trials arrive, run:
    ```bash
