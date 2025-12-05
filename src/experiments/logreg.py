@@ -7,7 +7,7 @@ TOPIC_OUT = "results_logreg"
 def search_space() -> Dict:
     return {
         "model": ("choice", ["logreg"]),
-        "C": ("uniform", 0.05, 3.0),
+        "C": ("uniform", 1e-4, 1e3),
     }
 
 def configs(n_trials: int):

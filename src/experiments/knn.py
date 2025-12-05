@@ -7,8 +7,8 @@ TOPIC_OUT = "results_knn"
 def search_space() -> Dict:
     return {
         "model": ("choice", ["knn"]),
-        "n_neighbors": ("int_range", 1, 16, 2),
+        "n_neighbors": ("int_range", 1, 50, 1),
     }
 
 def configs(n_trials: int):
-    yield from random_search(search_space(), n_trials)
+    yield from random_search(search_space(), n_trials, unique=True)
